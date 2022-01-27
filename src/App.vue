@@ -1,15 +1,36 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <TodoHeader/>
+    <TodoInput
+        @addTodo="addTodo"/>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
 
 export default {
   name: 'App',
+  data () {
+    return {
+      todoList: []
+    }
+  },
+  created () {
+
+  },
+  methods: {
+    addTodo (todoArray, itemArray) {
+      this.todoList = todoArray
+      console.log(todoArray)
+      console.log(this.todoList)
+      console.log(itemArray)
+    }
+  },
   components: {
-    HelloWorld
+    TodoHeader,
+    TodoInput
   }
 }
 </script>
