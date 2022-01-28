@@ -11,6 +11,8 @@
     <TodoList
         :todo-array="todoArray"
         @fnEdit="fnEdit"
+        @deleteTodo="deleteTodo"
+        @clearTodo="clearTodo"
     ></TodoList>
   </div>
 </template>
@@ -24,7 +26,13 @@ export default {
       newTodoItem: '',
       editTodoItem: '',
       todoArray: [],
-      isEdit: false
+      isEdit: false,
+      itemIndex: 0
+    }
+  },
+  created () {
+    if (localStorage.getItem('todolist')) {
+      this.todoArray = JSON.parse(localStorage.getItem('todolist'))
     }
   },
   methods: {
@@ -32,21 +40,44 @@ export default {
       if (this.newTodoItem === '') {
         alert('할일을 입력하세요')
       } else {
-        const itemArray = { item: this.newTodoItem && this.newTodoItem.trim(), isCompleted: false }
-        this.todoArray.push(itemArray)
+        const itemArray = this.todoArray.map(todo => todo.item)
+        if (itemArray.indexOf(this.newTodoItem) !== -1) {
+          alert('이미 등록된 할일입니다.')
+          return
+        }
+        const itemInfo = { item: this.newTodoItem && this.newTodoItem.trim(), isCompleted: false }
+        this.todoArray.push(itemInfo)
         this.newTodoItem = ''
         localStorage.setItem('todolist', JSON.stringify(this.todoArray))
-        console.log(this.todoArray)
       }
     },
-    editTodo () {
-      console.log(this.editTodoItem)
-      this.editTodoItem = ''
-    },
-    fnEdit (isEdit) {
-      console.log(isEdit)
+    fnEdit (isEdit, index) {
       this.isEdit = isEdit
-      console.log(isEdit)
+      this.editTodoItem = this.todoArray[index].item
+      this.itemIndex = index
+    },
+    editTodo () {
+      const itemArray = this.todoArray.map(todo => todo.item)
+      if (itemArray.indexOf(this.editTodoItem) !== -1) {
+        alert('이미 등록된 할일입니다.')
+        return
+      }
+      this.todoArray = JSON.parse(localStorage.getItem('todolist'))
+      this.todoArray[this.itemIndex].item = this.editTodoItem
+
+      localStorage.setItem('todolist', JSON.stringify(this.todoArray))
+      this.editTodoItem = ''
+      this.isEdit = false
+    },
+    deleteTodo (index) {
+      this.todoArray = JSON.parse(localStorage.getItem('todolist'))
+      this.todoArray.splice(index, 1)
+
+      localStorage.setItem('todolist', JSON.stringify(this.todoArray))
+    },
+    clearTodo () {
+      localStorage.clear()
+      this.todoArray = []
     }
   },
   components: {

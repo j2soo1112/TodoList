@@ -2,7 +2,8 @@
   <div>
     <TodoHeader/>
     <TodoInput
-        @addTodo="addTodo"/>
+        :todoList="todoList"
+    />
   </div>
 </template>
 
@@ -18,15 +19,8 @@ export default {
     }
   },
   created () {
-
   },
   methods: {
-    addTodo (todoArray, itemArray) {
-      this.todoList = todoArray
-      console.log(todoArray)
-      console.log(this.todoList)
-      console.log(itemArray)
-    }
   },
   components: {
     TodoHeader,
