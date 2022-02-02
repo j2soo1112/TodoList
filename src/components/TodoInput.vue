@@ -1,18 +1,20 @@
 <template>
-  <div>
+  <div class="inputSection">
     <div>
       <input type="text" v-model="newTodoItem" @keyup.enter="addTodo"/>
-      <button @click="addTodo">add</button>
+      <button class="inputBtn" @click="addTodo">add</button>
     </div>
     <div>
       <input v-if="isEdit" type="text" v-model="editTodoItem" @keyup.enter="editTodo"/>
-      <button v-if="isEdit" @click="editTodo">edit</button>
+      <button class="inputBtn" v-if="isEdit" @click="editTodo">edit</button>
     </div>
     <TodoList
         :todo-array="todoArray"
+        :msg="msg"
         @fnEdit="fnEdit"
-        @deleteTodo="deleteTodo"
         @clearTodo="clearTodo"
+        @deleteTodo="deleteTodo"
+        @checkTodo="checkTodo"
     ></TodoList>
   </div>
 </template>
@@ -27,12 +29,15 @@ export default {
       editTodoItem: '',
       todoArray: [],
       isEdit: false,
-      itemIndex: 0
+      itemIndex: 0,
+      msg: ''
     }
   },
   created () {
-    if (localStorage.getItem('todolist')) {
+    if (this.todoArray.length !== 0) {
       this.todoArray = JSON.parse(localStorage.getItem('todolist'))
+    } else if (this.todoArray.length === 0) {
+      this.msg = '할일이 없어요.'
     }
   },
   methods: {
@@ -49,7 +54,12 @@ export default {
         this.todoArray.push(itemInfo)
         this.newTodoItem = ''
         localStorage.setItem('todolist', JSON.stringify(this.todoArray))
+        this.msg = ''
       }
+    },
+    checkTodo (todoItem) {
+      console.log(todoItem.isCompleted)
+      localStorage.setItem('todolist', JSON.stringify(this.todoArray))
     },
     fnEdit (isEdit, index) {
       this.isEdit = isEdit
@@ -74,9 +84,15 @@ export default {
       this.todoArray.splice(index, 1)
 
       localStorage.setItem('todolist', JSON.stringify(this.todoArray))
+      console.log(this.todoArray.length === 0)
+      if (this.todoArray.length === 0) {
+        this.msg = '할일이 없어요.'
+        console.log(this.msg)
+      }
     },
     clearTodo () {
       localStorage.clear()
+      this.msg = '할일이 없어요.'
       this.todoArray = []
     }
   },

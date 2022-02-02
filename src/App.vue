@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id ="app">
     <TodoHeader/>
     <TodoInput
         :todoList="todoList"
@@ -29,9 +29,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@font-face {
+  font-family: 'SANGJUDajungdagam';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2112@1.0/SANGJUDajungdagam.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: SANGJUDajungdagam, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
