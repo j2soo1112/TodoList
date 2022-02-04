@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="todoListSection">
-      <div>{{ msg }}</div>
+        {{ msg }}
       <li
           v-for="(todoItem, index) in todoArray"
           :key="index">
@@ -19,7 +19,7 @@
               {{ todoItem.item }}
             </span>
           <div class="editBtnSection">
-            <input v-if="todoItem.isEdit" type="text" v-model="editTodoItem" @keyup.enter="editItem(todoItem, index)"/>
+            <input v-if="todoItem.isEdit" type="text" v-model='todoItem.value' @keyup.enter="editItem(todoItem, index)"/>
             <button class="inputBtn" v-if="todoItem.isEdit" @click="editItem(todoItem, index)">edit</button>
           </div>
         </div>
@@ -37,8 +37,7 @@
 export default {
   data () {
     return {
-      message: '',
-      editTodoItem: ''
+      message: ''
     }
   },
   props: {
@@ -54,17 +53,17 @@ export default {
     },
     editTodo (todoItem) {
       todoItem.isEdit = !todoItem.isEdit
-      this.editTodoItem = todoItem.item
-      this.$emit('fnEdit', todoItem)
+      todoItem.value = todoItem.item
+      this.$emit('fnEdit')
     },
     editItem (todoItem, index) {
       const itemArray = this.todoArray.map(todo => todo.item)
-      if (itemArray.indexOf(this.editTodoItem) !== -1) {
+      if (itemArray.indexOf(todoItem.value) !== -1) {
         alert('이미 등록된 할일입니다.')
-      } else if (this.editTodoItem === '') {
+      } else if (todoItem.value === '') {
         alert('내용을 입력하세요')
       } else {
-        this.$emit('editItem', this.editTodoItem, index)
+        this.$emit('editItem', todoItem.value, index)
       }
     },
     deleteTodo (index) {
@@ -93,7 +92,7 @@ div{
       margin: 10px;
       padding-left: 5px;
       background-color: lightgray;
-      font-family: 'SANGJUDajungdagam';
+      font-family: SANGJUDajungdagam, sans-serif;
     }
     .inputBtn{
       border-radius: 10px;
@@ -153,7 +152,7 @@ div{
     border: solid 1px;
     width: 100px;
     height: 50px;
-    font-family: 'SANGJUDajungdagam';
+    font-family: SANGJUDajungdagam, sans-serif;
   }
 }
 </style>

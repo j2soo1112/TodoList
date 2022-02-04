@@ -2,7 +2,6 @@
   <div id ="app">
     <TodoHeader/>
     <TodoInput
-        :todoList="todoList"
     />
   </div>
 </template>
@@ -15,7 +14,6 @@ export default {
   name: 'App',
   data () {
     return {
-      todoList: []
     }
   },
   created () {

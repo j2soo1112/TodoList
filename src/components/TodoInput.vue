@@ -28,8 +28,9 @@ export default {
     }
   },
   created () {
+    this.todoArray = JSON.parse(localStorage.getItem('todolist'))
     if (this.todoArray.length !== 0) {
-      this.todoArray = JSON.parse(localStorage.getItem('todolist'))
+      this.msg = ''
     } else if (this.todoArray.length === 0) {
       this.msg = '할일이 없어요.'
     }
@@ -44,7 +45,7 @@ export default {
           alert('이미 등록된 할일입니다.')
           return
         }
-        const itemInfo = { item: this.newTodoItem && this.newTodoItem.trim(), isCompleted: false, isEdit: false }
+        const itemInfo = { item: this.newTodoItem && this.newTodoItem.trim(), isCompleted: false, isEdit: false, value: '' }
         this.todoArray.push(itemInfo)
         this.newTodoItem = ''
         localStorage.setItem('todolist', JSON.stringify(this.todoArray))
