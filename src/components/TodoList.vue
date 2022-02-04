@@ -6,15 +6,25 @@
           v-for="(todoItem, index) in todoArray"
           :key="index">
         <div class="listSection">
-          <button @click="checkTodo(todoItem)" :class="{ isCheckedBtn: todoItem.isCompleted }">✔️</button>
+          <button
+              @click="checkTodo(todoItem)"
+              :class="{ isCheckedBtn: todoItem.isCompleted }"
+              v-if="!todoItem.isEdit"
+          >✔️</button>
             <span
                 :class="{ isChecked: todoItem.isCompleted }"
-                @click="checkTodo(todoItem)">
+                @click="checkTodo(todoItem)"
+                v-if="!todoItem.isEdit"
+            >
               {{ todoItem.item }}
             </span>
+          <div class="editBtnSection">
+            <input v-if="todoItem.isEdit" type="text" v-model="editTodoItem" @keyup.enter="editItem(todoItem, index)"/>
+            <button class="inputBtn" v-if="todoItem.isEdit" @click="editItem(todoItem, index)">edit</button>
+          </div>
         </div>
         <div class="buttonSection">
-          <button @click="editTodo(index)">✏️</button>
+          <button @click="editTodo(todoItem)">✏️</button>
           <button @click="deleteTodo(index)">❌</button>
         </div>
       </li>
@@ -27,8 +37,8 @@
 export default {
   data () {
     return {
-      isEdit: false,
-      message: ''
+      message: '',
+      editTodoItem: ''
     }
   },
   props: {
@@ -36,20 +46,26 @@ export default {
     msg: String
   },
   created () {
-    console.log(this.todoArray)
   },
   methods: {
     checkTodo (todoItem) {
       todoItem.isCompleted = !todoItem.isCompleted
       this.$emit('checkTodo', todoItem)
     },
-    editTodo (index) {
-      if (this.isEdit) {
-        this.isEdit = false
+    editTodo (todoItem) {
+      todoItem.isEdit = !todoItem.isEdit
+      this.editTodoItem = todoItem.item
+      this.$emit('fnEdit', todoItem)
+    },
+    editItem (todoItem, index) {
+      const itemArray = this.todoArray.map(todo => todo.item)
+      if (itemArray.indexOf(this.editTodoItem) !== -1) {
+        alert('이미 등록된 할일입니다.')
+      } else if (this.editTodoItem === '') {
+        alert('내용을 입력하세요')
       } else {
-        this.isEdit = true
+        this.$emit('editItem', this.editTodoItem, index)
       }
-      this.$emit('fnEdit', this.isEdit, index)
     },
     deleteTodo (index) {
       this.$emit('deleteTodo', index)
@@ -64,9 +80,12 @@ export default {
 <style lang="scss">
 div{
   .inputSection{
+    .addInputSection{
+      margin-left: auto;
+    }
     input{
-      width: 500px;
-      height: 32px;
+      width: 255px;
+      height: 28px;
       font-size: 20px;
       border: 0;
       border-radius: 10px;
@@ -79,7 +98,7 @@ div{
     .inputBtn{
       border-radius: 10px;
       border: solid 1px;
-      padding: 7px;
+      padding: 5px;
     }
   }
   button{
@@ -90,6 +109,7 @@ div{
     font-size: 1.1em;
     align-items: center;
     margin: 5px;
+    padding: 5px;
     &:hover { opacity: 50% }
   }
   .todoListSection{
@@ -110,6 +130,8 @@ div{
         margin: 5px;
         span{
           cursor: pointer;
+        }
+        .editBtnSection{
         }
         .isCheckedBtn{
           opacity: 60%;
